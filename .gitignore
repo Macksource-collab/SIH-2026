@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
 
 # Virtual environment
 venv/
@@ -8,18 +9,20 @@ backend/venv/
 
 # Environment variables
 .env
+.env.*
 
-# Uploaded images
+# Uploads and reports
 backend/uploads/
-
-# Generated reports
 backend/reports/
 
 # Node
 node_modules/
-
-# Build
+frontend/node_modules/
 dist/
 
 # VS Code
 .vscode/
+
+# Windows / macOS
+Thumbs.db
+.DS_Store
