@@ -26,3 +26,19 @@ dist/
 # Windows / macOS
 Thumbs.db
 .DS_Store
+
+# Share templates, never real credentials or databases
+!.env.example
+!*.env.example
+backend/*.db
+backend/*.db-*
+backend/.dev-credentials.json
+backend/.ocr-venv/
+backend/.ocr-cache/
+backend/.tools/
+backend/.derived/
+backend/.ocr-smoke/
+backend/.verification-credentials.json
+backend/.test-tmp-*/
+tmp/
+backend/.migration-backups/

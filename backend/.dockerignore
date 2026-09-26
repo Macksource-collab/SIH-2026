@@ -1,0 +1,10 @@
+venv
+.ocr-venv
+.ocr-cache
+uploads
+reports
+*.db
+.env
+__pycache__
+.pytest_cache
+tests

@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "rule_code": "EXAMPLE-MRP-PRESENCE",
+      "title": "MRP declaration detected",
+      "description": "DEMO example for validating the import workflow. This is not an official legal rule.",
+      "product_category": null,
+      "field_name": "mrp",
+      "validator_type": "numeric",
+      "validator_config": {
+        "min": 0.01,
+        "min_confidence": 0.8,
+        "absence_is_failure": false
+      },
+      "severity": "warning",
+      "source_document": "PackSure import example - NOT official law",
+      "source_reference": null,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "version": 1,
+      "is_active": false,
+      "verification_status": "DEMO"
+    }
+  ]
+}

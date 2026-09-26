@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: packsure
+      POSTGRES_USER: packsure
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U packsure -d packsure"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://packsure:${POSTGRES_PASSWORD}@postgres:5432/packsure
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY}
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      UPLOAD_DIR: /data/uploads
+      REPORT_DIR: /data/reports
+      MAX_UPLOAD_SIZE_MB: 10
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080}
+      LOG_LEVEL: INFO
+      OCR_WORKER_PYTHON: /opt/ocr-venv/bin/python
+      OCR_TIMEOUT_SECONDS: 300
+      OCR_MODEL_CACHE_DIR: /data/ocr-cache
+    command: ["sh", "-c", "alembic upgrade head && python -m scripts.seed_demo_rules && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1 --proxy-headers --forwarded-allow-ips=*"]
+    volumes:
+      - uploads_data:/data/uploads
+      - reports_data:/data/reports
+      - ocr_cache:/data/ocr-cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads_data:
+  reports_data:
+  ocr_cache:
